@@ -1,0 +1,85 @@
+NAME
+    The Apache::Cookie module - An OO interface to cookies based on
+    CGI::Cookie, for use in mod_perl Apache modules.
+
+SYNOPSIS
+     use Apache::Cookie;
+
+     $r = Apache->request;
+
+     # Object oriented
+     $cookie = Apache::Cookie->new($r);
+
+     $cookie->set(-name => 'cookie', -value => 'monster');
+     $value = $cookie->get('cookie');
+
+     # Package oriented
+     Apache::Cookie->set(-name => 'cookie', -value => 'monster');
+     Apache::Cookie->get('cookie');
+
+DESCRIPTION
+    Grinding my teeth, browsing over Apache::AuthCookie I figure
+    there has to be a nice worry-free way of using cookies within
+    apache modules. There wasn't. So I decided to sit down and
+    figure it out. Apache::Cookie is the result.
+
+CONSTRUCTOR
+    Apache::Cookie->new([ $r ])
+        Construct a new Apache::Cookie object. You don't really have
+        to, but if your zealous $r is an Apache request object. If
+        your just looking to manipulate cookies in this request the
+        Package oriented model will do you just fine.
+
+    set( %OPTIONS )
+        Set a cookie on the client. We take your options and grind
+        them through a CGI::Cookie constructor, stringify the cookie
+        and send it over to our client's cookie jar (by Set-Cookie
+        header).
+
+        Say...
+
+                 Apache::Cookie->set(-name => 'foo',
+                                     -value   =>  'bar',
+                                     -expires =>  '+3M',
+                                     -domain  =>  '.capricorn.com',
+                                     -path    =>  '/cgi-bin/database'
+                                     -secure  =>  1
+                                     );
+
+        For further info, take a look at the CGI::Cookie
+        documentation.
+
+        BTW, the undocumented Apache $r->cgi_header_out is used to
+        set headers, very useful, but might be deprecated in the
+        future.
+
+    get( [$COOKIE_NAME] )
+        Dip into the client's transmitted cookie jar. What you get
+        depends on what you call this method with.
+
+        Apache::Cookie->get()
+
+        Poof! you just won a hash of cookies, with array reference
+        values. You always get back array references, this is
+        uncomfortable but at least consistent with what CGI::Cookie-
+        >parse returns.
+
+        Apache::Cookie->get($COOKIE_NAME)
+
+         If $COOKIE_NAME was set by the client, you get back the value.
+         If your expecting a scalar, your going to get one.
+         If your expecting an array, likewise.
+
+        Expect an array when the Cookie value is a scalar and you'll
+        get a single item array.
+
+        Expect a scalar when the Cookie value is an array and you'll
+        get the first array value.
+
+SEE ALSO
+        the CGI::Cookie manpage, the CGI manpage
+
+AUTHOR
+         Liraz Siri <liraz_siri@usa.net>, Ariel, Israel.
+         Copyrights 1999 (c) All rights reserved.
+

@@ -1,0 +1,7 @@
+MANIFEST
+MANIFEST.SKIP
+Makefile.PL
+README
+lib/Apache/Cookie.pm
+lib/CGI/Cookie.pm
+lib/CGI/Support.pm
